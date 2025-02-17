@@ -99,7 +99,7 @@ import { reactive, computed, ref, onMounted } from 'vue';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
-const API_URL = 'http://localhost:3000'; // URL de la API
+const API_URL = 'http://100.0.2.27:3000'; // URL de la API
 
 const filiales = ["Melo", "Río Branco", "Santa Clara", "Cerro Largo"];
 
@@ -117,7 +117,7 @@ const servidores = ref([]);
 // Cargar el estado de los servidores desde el backend
 async function cargarEstados() {
   try {
-    const response = await axios.get('http://localhost:3000/api/servidores');
+    const response = await axios.get('http://100.0.2.27:3000/api/servidores');
     servidores.value = response.data;
   } catch (error) {
     console.error('Error al cargar el estado de los servidores:', error);
@@ -133,7 +133,7 @@ onMounted(() => {
   cargarEstados();
   cargarNoticias();
   fetchMonitors()
-  socket = io('http://localhost:3000'); // Cambia la URL según tu configuración
+  socket = io('http://100.0.2.27:3000'); // Cambia la URL según tu configuración
 
   socket.on('connect', () => {
   console.log('Conectado a Socket.IO');
@@ -242,7 +242,7 @@ function eliminarNoticiaDeLista(id) {
 
 async function cargarNoticias() {
   try {
-    const response = await axios.get("http://localhost:3000/api/noticias");
+    const response = await axios.get("http://100.0.2.27:3000/api/noticias");
     
     // Itera directamente sobre el array de noticias
     response.data.forEach((noticia) => {

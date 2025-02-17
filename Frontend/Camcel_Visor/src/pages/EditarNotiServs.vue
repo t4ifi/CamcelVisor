@@ -84,7 +84,7 @@ import { reactive, ref, onMounted } from 'vue';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'http://100.0.2.27:3000';
 const filiales = ["Melo", "Río Branco", "Santa Clara", "Cerro Largo"];
 
 const dialogoVisible = ref(false);
@@ -97,7 +97,7 @@ let socket = null;
 onMounted(() => {
   cargarEstados();
   cargarNoticias();
-  socket = io('http://localhost:3000');
+  socket = io('http://100.0.2.27:3000');
 
   socket.on('noticiaCreada', (data) => noticias.value.unshift(data));
   socket.on('servidorCreado', (data) => servidores.value.unshift(data));

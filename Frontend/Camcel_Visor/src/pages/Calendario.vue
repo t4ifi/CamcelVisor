@@ -110,7 +110,7 @@ const nextMonth = () => {
 
 const fetchNews = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/noticias');
+    const response = await axios.get('http://100.0.2.27:3000/api/noticias');
     newsList.value = response.data;
   } catch (error) {
     console.error('Error al obtener noticias:', error);

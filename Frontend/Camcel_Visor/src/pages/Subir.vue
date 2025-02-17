@@ -104,7 +104,7 @@ export default {
     async submitForm() {
       this.loading = true;
       try {
-        const response = await axios.post('http://localhost:3000/api/SubirNoticias', {
+        const response = await axios.post('http://100.0.2.27:3000/api/SubirNoticias', {
           titulo: this.titulo,
           descripcion: this.descripcion,
           filial: this.filial,
@@ -130,7 +130,7 @@ export default {
     async submitForm2() {
       this.loading = true;
       try {
-        const response = await axios.post('http://localhost:3000/api/SubirServ', {
+        const response = await axios.post('http://100.0.2.27:3000/api/SubirServ', {
           nombre: this.nombre_serv,
           ip: this.ip,
         });

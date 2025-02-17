@@ -8,7 +8,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const login = async (username, password) => { // Cambia "nombre" a "username"
     try {
-      const response = await axios.post('http://localhost:3000/api/login', { nombre: username, password });
+      const response = await axios.post('http://100.0.2.27:3000/api/login', { nombre: username, password });
       token.value = response.data.token;
       nombre.value = response.data.nombre;
       localStorage.setItem('token', token.value);
