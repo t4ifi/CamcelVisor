@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "node-schedule": "^2.1.1",
+    "quasar": "^2.17.7",
+    "vue-cal": "^4.10.2"
+  }
+}

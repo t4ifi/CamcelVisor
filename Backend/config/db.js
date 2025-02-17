@@ -1,19 +1,25 @@
+const mysql = require('mysql2/promise');
 
-
-const mysql = require('mysql2');
-const db = mysql.createConnection({
+const pool = mysql.createPool({
   host: "127.0.0.1",
   user: "root",
-  password: "",
+  password: "espepa",
   database: "noticias_db",
-}).promise();
-
-db.connect((err) => {
-  if (err) {
-    console.error("Error al conectar con MySQL:", err.message);
-    return;
-  }
-  console.log("Conexión a MySQL establecida");
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-module.exports = db;
+async function testConnection() {
+  try {
+    const connection = await pool.getConnection();
+    console.log("✅ Conexión a MySQL establecida");
+    connection.release();
+  } catch (error) {
+    console.error("❌ Error al conectar con MySQL:", error.message);
+  }
+}
+
+testConnection();
+
+module.exports = pool;

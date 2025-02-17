@@ -73,7 +73,7 @@ const secretKey = process.env.JWT_SECRET || 'secreto123';
 const db = mysql.createConnection({
   host: "127.0.0.1", // Cambia según tu configuración
   user: "root", // Usuario de MySQL
-  password: "", // Contraseña de MySQL
+  password: "espepa", // Contraseña de MySQL
   database: "noticias_db", // Nombre de la base de datos
 });
 
@@ -102,7 +102,7 @@ db.connect((err) => {
     const dbWithDatabase = mysql.createConnection({
       host: "localhost",
       user: "root",
-      password: "",
+      password: "espepa",
       database: `noticias_db`,
     });
 
@@ -135,7 +135,8 @@ db.connect((err) => {
         CREATE TABLE IF NOT EXISTS servidores (
         id INT AUTO_INCREMENT PRIMARY KEY,
         nombre VARCHAR(255) NOT NULL,
-        ip VARCHAR(255) NOT NULL
+        ip VARCHAR(255) NOT NULL,
+        estado VARCHAR(20)
         )
       `;
       dbWithDatabase.query(tablaNoticias, (err, result) => {

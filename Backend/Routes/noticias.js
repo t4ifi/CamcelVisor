@@ -10,10 +10,10 @@ const { server } = require('../server.js');
 const { app } = require('../server.js');
 
 
-// 📌 Obtener todas las noticias
+
 router.get("/", async (req, res) => {
   try {
-    const [results] = await db.query("SELECT * FROM noticias");
+    const [results] = await db.query("SELECT * FROM noticias ORDER BY fecha DESC"); // Asegúrate de que 'fecha' sea el nombre correcto de tu columna
     res.json(results);
   } catch (error) {
     console.error("Error al obtener noticias:", error);
@@ -22,8 +22,7 @@ router.get("/", async (req, res) => {
 });
 
 
-// 📌 Crear una noticia
-// 📌 Crear una noticia
+
 router.post(
   "/",
   [
