@@ -322,3 +322,33 @@ const actualizarNoticia = (nuevaNoticia) => {
     font-weight: bold;
     font-size: 30px;
   }
+  /* Evita que el texto de la noticia se salga del card */
+.noticia-card {
+  height: 25vh;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+/* Estilo para truncar el texto de la noticia */
+.noticia-texto {
+  font-size: 25px;
+  word-wrap: break-word;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Máximo 3 líneas antes de truncar */
+  -webkit-box-orient: vertical;
+
+  /* Compatibilidad futura */
+  line-clamp: 3;
+  box-orient: vertical;
+}
+
+/* Si quieres que tenga scroll en lugar de truncarse */
+.noticia-texto:hover {
+  overflow-y: auto;
+  max-height: 100px;
+}
+  </style>
+  

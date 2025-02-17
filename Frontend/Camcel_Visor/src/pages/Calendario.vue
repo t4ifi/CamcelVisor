@@ -43,6 +43,14 @@
             <div v-else class="text-grey-6">No hay noticias para la fecha seleccionada.</div>
           </q-card-section>
         </q-card>
+
+        <!-- Detalle de la noticia seleccionada -->
+        <q-card v-if="selectedNews">
+          <q-card-section>
+            <div class="text-h6 q-mb-sm">{{ selectedNews.titulo }}</div>
+            <div class="text-body1">{{ selectedNews.descripcion }}</div>
+          </q-card-section>
+        </q-card>
       </q-col>
     </q-row>
   </q-page>
@@ -53,6 +61,7 @@ import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 
 const selectedDate = ref('');
+const selectedNews = ref(null); // Variable para almacenar la noticia seleccionada
 const newsList = ref([]);
 const filteredNews = ref([]);
 
@@ -117,6 +126,10 @@ const filterNews = () => {
 const formatearFecha = (fechaISO) => {
   const fecha = new Date(fechaISO);
   return fecha.toLocaleDateString('es-ES');
+};
+
+const openNews = (news) => {
+  selectedNews.value = news;
 };
 
 onMounted(fetchNews);
