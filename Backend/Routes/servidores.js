@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
   const query = "INSERT INTO servidores (nombre, ip) VALUES (?, ?)";
   try {
     const [result] = await db.execute(query, [nombre, ip]);
-    io.emit("servidorCreado", { id: result.insertId, nombre, ip });
+    global.io.emit("servidorCreado", { id: result.insertId, nombre, ip });
 
     res.status(200).json({ message: "Servidor registrado exitosamente", id: result.insertId });
   } catch (err) {
@@ -51,7 +51,7 @@ router.put("/:id", async (req, res) => {
     }
 
     const servidorActualizado = { id, nombre, ip };
-    io.emit("servidorActualizado", servidorActualizado); // Notificar cambios
+    global.io.emit("servidorEditado", servidorActualizado); // Notificar cambios
     res.json(servidorActualizado);
   } catch (err) {
     console.error("Error al actualizar el servidor:", err);

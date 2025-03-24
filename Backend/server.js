@@ -45,7 +45,7 @@ const corsOptions = {
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Métodos permitidos
   allowedHeaders: ["Content-Type", "Authorization"], // Headers permitidos
 };
-const password = 'admin'
+const password = 'jasuarez'
 bcrypt.hash(password, 10, (err, hash) => {
   if (err) {
     console.error("Error al hashear la contraseña:", err);
@@ -160,50 +160,9 @@ db.connect((err) => {
           console.log("Tabla 'Servidores' verificada o creada");
         }
       });
-// Ruta para crear una noticia
-app.post('/api/SubirNoticias', (req, res) => {
-  const { titulo, descripcion, filial } = req.body;
 
-  // Validar los datos
-  if (!titulo || !descripcion || !filial) {
-    return res.status(400).json({ error: 'Faltan datos requeridos' });
-  }
-
-  // Crear la consulta para insertar la noticia
-  const query = 'INSERT INTO noticias (titulo, descripcion, filial) VALUES (?, ?, ?)';
-  db.query(query, [titulo, descripcion, filial], (err, result) => {
-    if (err) {
-      console.error('Error al insertar la noticia:', err);
-      return res.status(500).json({ error: 'Error al cargar la noticia' });
-    }
-    io.emit('noticiaCreada', { id: result.insertId, titulo, descripcion, filial })
-
-    res.status(200).json({ message: 'Noticia cargada exitosamente', id: result.insertId });
-  }); 
 });
 });
-});
-});
-// Ruta para crear una noticia
-app.post('/api/SubirServ', (req, res) => {
-  const { nombre, ip } = req.body;
-
-  // Validar los datos
-  if (!nombre || !ip ) {
-    return res.status(400).json({ error: 'Faltan datos requeridos' });
-  }
-
-  // Crear la consulta para insertar el servidor
-  const query = 'INSERT INTO Servidores (nombre, ip) VALUES (?, ?)';
-  db.query(query, [nombre, ip], (err, result) => {
-    if (err) {
-      console.error('Error al insertar el servidor:', err);
-      return res.status(500).json({ error: 'Error al cargar el servidor' });
-    }
-    io.emit('servidorCreado', { id: result.insertId, nombre, ip })
-
-    res.status(200).json({ message: 'Servidor cargada exitosamente', id: result.insertId });
-  }); 
 });
 
 

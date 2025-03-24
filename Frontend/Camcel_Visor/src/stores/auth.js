@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import axios from 'axios';
+import { api } from 'src/boot/axios'
 
 export const useAuthStore = defineStore('auth', () => {
   const nombre = ref(localStorage.getItem('nombre') || '');
@@ -8,12 +8,13 @@ export const useAuthStore = defineStore('auth', () => {
 
   const login = async (username, password) => { // Cambia "nombre" a "username"
     try {
-      const response = await axios.post('http://100.0.2.27:3000/api/login', { nombre: username, password });
+      const response = await api.post('/api/login', { nombre: username, password });
       token.value = response.data.token;
       nombre.value = response.data.nombre;
       localStorage.setItem('token', token.value);
       localStorage.setItem('nombre', nombre.value);
     } catch (error) {
+      console.log(api)
       console.error('Error en login:', error);
     }
   };

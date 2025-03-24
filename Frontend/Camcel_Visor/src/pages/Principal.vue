@@ -6,6 +6,7 @@
       </div>
       <div style="width: 50%;">
       <q-toolbar-title>Noticias en Pantalla</q-toolbar-title>
+     
     </div>
     <div style="width: 30%;">
       <q-toolbar-title>Estado de los Servidores</q-toolbar-title>
@@ -96,10 +97,9 @@
   
 <script setup>
 import { reactive, computed, ref, onMounted } from 'vue';
-import axios from 'axios';
+import { api } from 'src/boot/axios'
 import { io } from 'socket.io-client';
 
-const API_URL = 'http://100.0.2.27:3000'; // URL de la API
 
 const filiales = ["Melo", "Río Branco", "Santa Clara", "Cerro Largo"];
 
@@ -117,7 +117,7 @@ const servidores = ref([]);
 // Cargar el estado de los servidores desde el backend
 async function cargarEstados() {
   try {
-    const response = await axios.get('http://100.0.2.27:3000/api/servidores');
+    const response = await api.get('/api/servidores');
     servidores.value = response.data;
   } catch (error) {
     console.error('Error al cargar el estado de los servidores:', error);
@@ -133,7 +133,7 @@ onMounted(() => {
   cargarEstados();
   cargarNoticias();
   fetchMonitors()
-  socket = io('http://100.0.2.27:3000'); // Cambia la URL según tu configuración
+  socket = io(import.meta.env.VITE_API); // Cambia la URL según tu configuración
 
   socket.on('connect', () => {
   console.log('Conectado a Socket.IO');
@@ -190,6 +190,42 @@ onMounted(() => {
 
   console.log('Nuevo servidor agregado:', data);
 });
+socket.on('noticiaEditada', (data) => {
+    
+
+    // Verificar si `data` es un array o un solo objeto
+    if (Array.isArray(data)) {
+      // Si es un array, agregar cada noticia al inicio del array de noticias
+      data.forEach((noticia) => {
+        noticias.value.unshift(noticia);
+      });
+    } else if (data && typeof data === 'object') {
+      // Si es un solo objeto, agregarlo directamente
+      noticias.value.unshift(data);
+    } else {
+      console.error('El formato de data no es válido:', data);
+    }
+    
+    actualizarNoticia(data)
+    cargarNoticias();
+  });
+socket.on('servidorEditado', (data) => {
+  // Verificar si `data` es un array o un solo objeto
+  if (Array.isArray(data)) {
+    // Si es un array, agregar cada servidor al inicio del array de servidores
+    data.forEach((servidor) => {
+      servidores.value.unshift(servidor);
+    });
+  } else if (data && typeof data === 'object') {
+    // Si es un solo objeto, agregarlo directamente
+    servidores.value.unshift(data);
+  } else {
+    console.error('El formato de data no es válido:', data);
+  }
+
+  console.log('Nuevo servidor agregado:', data);
+  cargarEstados();
+});
   
   // Escuchar el evento de estado cambiado
   socket.on('estadoServidorCambiado', (data) => {
@@ -241,37 +277,15 @@ function eliminarNoticiaDeLista(id) {
 }
 
 async function cargarNoticias() {
-  try {
-    const response = await axios.get("http://100.0.2.27:3000/api/noticias");
-    
-    // Itera directamente sobre el array de noticias
-    response.data.forEach((noticia) => {
-      noticias.value.push(noticia);
-    });
-
-    console.log("Noticias cargadas:", noticias.value);
-  } catch (error) {
-    console.error("Error al cargar noticias:", error);
-  }
+  const response = await api.get(`/api/noticias`);
+  noticias.value = response.data;
 }
 
 
 const monitors = ref([]);
 
 const fetchMonitors = async () => {
-  try {
-    const response = await axios.get("http://100.0.0.251:3001/api", {
-      headers: {
-        Authorization: "Bearer TU_TOKEN_API", // Reemplaza con tu token de Uptime Kuma
-        "Content-Type": "application/json",
-      },
-    });
-
-    monitors.value = response.data;
-    console.log("Monitores obtenidos:", monitors.value);
-  } catch (error) {
-    console.error("Error obteniendo monitores:", error);
-  }
+  
 };
 
 const dialogoNoticia = ref(false);

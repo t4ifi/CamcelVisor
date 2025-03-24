@@ -58,7 +58,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import axios from 'axios';
+import { api } from 'src/boot/axios'
 
 const selectedDate = ref('');
 const selectedNews = ref(null); // Variable para almacenar la noticia seleccionada
@@ -110,7 +110,7 @@ const nextMonth = () => {
 
 const fetchNews = async () => {
   try {
-    const response = await axios.get('http://100.0.2.27:3000/api/noticias');
+    const response = await api.get('/api/noticias');
     newsList.value = response.data;
   } catch (error) {
     console.error('Error al obtener noticias:', error);

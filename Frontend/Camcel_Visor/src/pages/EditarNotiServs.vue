@@ -12,7 +12,7 @@
 
     <q-page>
       <q-row class="q-pa-md" style="display: flex; height: 90vh;">
-        <q-col style="width: 59%; height: 100%; display: block;">
+        <q-col style="width: 58%; height: 100%; display: block;">
           <div class="grid grid-cols-1 gap-4" v-if="noticias.length">
             <q-card v-for="noticia in noticias" :key="noticia.id" class="q-pa-md" style="height: 25vh;">
               <q-card-section>
@@ -24,7 +24,7 @@
                   <q-col style="width: 15%; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;">
                     <div class="text-h6 text-grey">{{ noticia.filial }}</div>
                     <div class="text-caption text-grey">{{ formatearFecha(noticia.fecha) }}</div>
-                    <div class="q-mt-sm" style="display: flex; justify-content: center;">
+                    <div class="q-mt-sm" style="display: flex; justify-content: center; width: min-content;">
                       <q-btn color="primary" icon="mdi-pencil-outline" @click="editarElemento(noticia, 'noticia')" />
                       <q-btn color="negative" icon="mdi-delete-empty-outline" @click="eliminarNoticia(noticia.id)" class="q-ml-sm" />
                     </div>
@@ -48,8 +48,8 @@
                   Estado: {{ servidor.estado }}
                 </div>
                 <div class="q-mt-sm" style="display: flex; justify-content: center;">
-                  <q-btn color="primary" icon="mdi-pencil-outline" @click="editarElemento(servidor, 'servidor')" />
-                  <q-btn color="negative" icon="mdi-delete-empty-outline" @click="eliminarServidor(servidor.id)" class="q-ml-sm" />
+                  <q-btn color="primary" icon="mdi-pencil-outline" @click="editarElemento(servidor, 'servidor')" style="width: 5px;"/>
+                  <q-btn color="negative" icon="mdi-delete-empty-outline" @click="eliminarServidor(servidor.id)" class="q-ml-sm" style="width: 5px;" />
                 </div>
               </q-card-section>
             </q-card>
@@ -81,10 +81,12 @@
 
 <script setup>
 import { reactive, ref, onMounted } from 'vue';
-import axios from 'axios';
+import { api } from 'src/boot/axios'
 import { io } from 'socket.io-client';
 
-const API_URL = 'http://100.0.2.27:3000';
+
+
+
 const filiales = ["Melo", "Río Branco", "Santa Clara", "Cerro Largo"];
 
 const dialogoVisible = ref(false);
@@ -97,10 +99,46 @@ let socket = null;
 onMounted(() => {
   cargarEstados();
   cargarNoticias();
-  socket = io('http://100.0.2.27:3000');
+  socket = io(import.meta.env.VITE_API);
 
   socket.on('noticiaCreada', (data) => noticias.value.unshift(data));
   socket.on('servidorCreado', (data) => servidores.value.unshift(data));
+  socket.on('noticiaEditada', (data) => {
+    
+
+    // Verificar si `data` es un array o un solo objeto
+    if (Array.isArray(data)) {
+      // Si es un array, agregar cada noticia al inicio del array de noticias
+      data.forEach((noticia) => {
+        noticias.value.unshift(noticia);
+      });
+    } else if (data && typeof data === 'object') {
+      // Si es un solo objeto, agregarlo directamente
+      noticias.value.unshift(data);
+    } else {
+      console.error('El formato de data no es válido:', data);
+    }
+    
+    actualizarNoticia(data)
+    cargarNoticias();
+  });
+  socket.on('servidorEditado', (data) => {
+  // Verificar si `data` es un array o un solo objeto
+  if (Array.isArray(data)) {
+    // Si es un array, agregar cada servidor al inicio del array de servidores
+    data.forEach((servidor) => {
+      servidores.value.unshift(servidor);
+    });
+  } else if (data && typeof data === 'object') {
+    // Si es un solo objeto, agregarlo directamente
+    servidores.value.unshift(data);
+  } else {
+    console.error('El formato de data no es válido:', data);
+  }
+
+  console.log('Nuevo servidor agregado:', data);
+  cargarEstados();
+});
   socket.on('estadoServidorCambiado', (data) => {
     const servidor = servidores.value.find((s) => s.id === data.id);
     if (servidor) servidor.estado = data.estado;
@@ -115,30 +153,32 @@ function editarElemento(elemento, tipo) {
 
 async function guardarEdicion() {
   if (tipoEdicion.value === 'noticia') {
-    await axios.put(`${API_URL}/api/noticias/${edicionActual.id}`, edicionActual);
+    await api.put(`/api/noticias/${edicionActual.id}`, edicionActual);
+    cargarNoticias();
   } else if (tipoEdicion.value === 'servidor') {
-    await axios.put(`${API_URL}/api/servidores/${edicionActual.id}`, edicionActual);
+    await api.put(`/api/servidores/${edicionActual.id}`, edicionActual);
+    cargarNoticias();
   }
   dialogoVisible.value = false;
 }
 
 async function eliminarNoticia(id) {
-  await axios.delete(`${API_URL}/api/noticias/${id}`);
+  await api.delete(`/api/noticias/${id}`);
   noticias.value = noticias.value.filter(n => n.id !== id);
 }
 
 async function eliminarServidor(id) {
-  await axios.delete(`${API_URL}/api/servidores/${id}`);
+  await api.delete(`/api/servidores/${id}`);
   servidores.value = servidores.value.filter(s => s.id !== id);
 }
 
 async function cargarNoticias() {
-  const response = await axios.get(`${API_URL}/api/noticias`);
+  const response = await api.get(`/api/noticias`);
   noticias.value = response.data;
 }
 
 async function cargarEstados() {
-  const response = await axios.get(`${API_URL}/api/servidores`);
+  const response = await api.get(`/api/servidores`);
   servidores.value = response.data;
 }
 

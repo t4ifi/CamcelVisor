@@ -42,7 +42,7 @@ router.post(
     try {
       const [result] = await db.execute(query, [titulo, descripcion, filial]);
       const nuevaNoticia = { id: result.insertId, titulo, descripcion, filial };
-      io.emit("noticiaCreada", nuevaNoticia); // Enviar evento a clientes
+      global.io.emit("noticiaCreada", nuevaNoticia); // Enviar evento a clientes
       res.status(201).json(nuevaNoticia);
     } catch (err) {
       console.error("Error al insertar la noticia:", err);
@@ -67,7 +67,8 @@ router.put("/:id", async (req, res) => {
     }
 
     const noticiaActualizada = { id, titulo, descripcion, filial };
-    global.io.emit("noticiaActualizada", noticiaActualizada); // Notificar cambios
+    console.log("noticiaEditada:", noticiaActualizada)
+    global.io.emit("noticiaEditada", noticiaActualizada); // Notificar cambios
     res.json(noticiaActualizada);
   } catch (err) {
     console.error("Error al actualizar la noticia:", err);
