@@ -227,7 +227,7 @@ socket.on('servidorEditado', (data) => {
   cargarEstados();
 });
   
-  // Escuchar el evento de estado cambiado
+   // Escuchar el evento de estado cambiado
   socket.on('estadoServidorCambiado', (data) => {
     console.log('Estado cambiado recibido:', data);
     const servidor = servidores.value.find((s) => s.id === data.id);
@@ -236,7 +236,6 @@ socket.on('servidorEditado', (data) => {
       servidor.estado = data.estado;
     }
   });
-
 
    
   },

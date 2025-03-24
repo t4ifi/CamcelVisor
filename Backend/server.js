@@ -14,6 +14,7 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const app = express();
 const port = 3000;
+const db2 = require("./config/db.js");
 
 // Crear servidor HTTP y Socket.IO
 const server = http.createServer(app);
@@ -73,7 +74,7 @@ const secretKey = process.env.JWT_SECRET || 'secreto123';
 const db = mysql.createConnection({
   host: "127.0.0.1", // Cambia según tu configuración
   user: "root", // Usuario de MySQL
-  password: "espepa", // Contraseña de MySQL
+
   database: "noticias_db", // Nombre de la base de datos
 });
 
@@ -171,55 +172,45 @@ app.use("/api/noticias", noticiasRoutes);
 app.use("/api/login", loginRoutes);
 app.use("/api/servidores", servidoresRoutes);
 
-setInterval(async () => {
+async function verificarServidores() {
   try {
-    // Obtener todos los servidores desde la base de datos
-    db.query('SELECT id, nombre, ip, estado FROM servidores', async (err, results) => {
-      if (err) {
-        console.error('Error al obtener servidores:', err);
-        return;
-      }
+    // Obtener servidores de la base de datos
+    const [servidores] = await db2.query('SELECT id, nombre, ip, estado FROM servidores');
 
-      const resultados = await Promise.all(
-        results.map(async (servidor) => {
-          // Realizar el ping al servidor
-          const isAlive = await new Promise((resolve) => {
-            ping.sys.probe(servidor.ip, (isAlive) => resolve(isAlive));
+    if (!servidores.length) {
+      console.log('⚠️ No hay servidores registrados.');
+      return;
+    }
+
+    for (const servidor of servidores) {
+      try {
+        // Hacer ping y verificar estado
+        const isAlive = await ping.promise.probe(servidor.ip);
+        const nuevoEstado = isAlive.alive ? 'Activo' : 'Caído';
+
+        if (servidor.estado !== nuevoEstado) {
+          console.log(`🔄 Servidor ${servidor.nombre} cambiado: ${servidor.estado} ➝ ${nuevoEstado}`);
+
+          // Actualizar estado en la base de datos
+          await db2.query('UPDATE servidores SET estado = ? WHERE id = ?', [nuevoEstado, servidor.id]);
+
+          // Emitir evento WebSocket
+          global.io.emit('estadoServidorCambiado', {
+            id: servidor.id,
+            estado: nuevoEstado
           });
-
-          const nuevoEstado = isAlive ? 'Activo' : 'Caído';
-
-          // Si el estado ha cambiado, actualizar la base de datos
-          if (servidor.estado !== nuevoEstado) {
-            console.log('Cambio')
-            db.query('UPDATE servidores SET estado = ? WHERE id = ?', [nuevoEstado, servidor.id], (err) => {
-              if (err) {
-                console.error('Error al actualizar el estado del servidor:', err);
-              } else {
-                // Emitir el evento a través de WebSocket
-                io.emit('estadoServidorCambiado', {
-                  id: servidor.id,
-                  estado: nuevoEstado
-                });
-              }
-            });
-          }
-
-          return {
-            ...servidor,
-            estado: nuevoEstado,
-          };
-        })
-      );
-
-      // Puedes hacer algo con los resultados aquí, si es necesario
-      // Ejemplo: Responder a los usuarios con los resultados de la comprobación
-    });
+        }
+      } catch (error) {
+        console.error(`❌ Error al verificar servidor ${servidor.nombre}:`, error);
+      }
+    }
   } catch (error) {
-    console.error('Error en la comprobación de estado de los servidores:', error);
+    console.error('❌ Error al obtener servidores:', error);
   }
-}, 30000); // 60000 ms = 1 minuto
+}
 
+// Ejecutar cada 3 segundos
+setInterval(verificarServidores, 30000);
 
 // Endpoint para obtener los servidores
 
