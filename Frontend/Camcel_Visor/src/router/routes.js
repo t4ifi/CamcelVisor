@@ -21,8 +21,23 @@ const routes = [
     ]
   },
   {
+    path: '/usuarios',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('src/pages/Usuarios.vue') }
+    ]
+  },
+  {
     path: '/login',
     component: () => import('src/pages/Login.vue')
+  },
+  {
+    path: '/reset_pwd',
+    component: () => import('src/pages/OlvidasteTuPwd.vue')
+  },
+  {
+    path: '/reset-password/:token',
+    component: () => import('src/pages/RestablecerPwd.vue')
   },
   {
     path: '/calendario',

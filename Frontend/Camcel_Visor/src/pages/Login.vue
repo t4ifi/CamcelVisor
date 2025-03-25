@@ -13,7 +13,8 @@
         </q-card-section>
   
         <q-card-actions align="right">
-          <q-btn label="Login" color="primary" @click="handleLogin" />
+          <q-btn label=" Login " color="primary" @click="handleLogin" />
+          <q-btn label="Reset PASS" color="primary" @click="handleReset" />
         </q-card-actions>
       </q-card>
     </q-page>
@@ -39,5 +40,10 @@
       router.push('/');
     }
   };
+  const handleReset = async () => {
+  
+  router.push("/reset_pwd")
+};
+
   </script>
   

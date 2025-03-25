@@ -9,6 +9,7 @@ const ping = require('ping');
 const noticiasRoutes = require('./Routes/noticias');
 const servidoresRoutes = require('./Routes/servidores');
 const loginRoutes = require('./Routes/login.js')
+const usuarios = require('./Routes/usuarios.js')
 const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
@@ -171,6 +172,7 @@ db.connect((err) => {
 app.use("/api/noticias", noticiasRoutes);
 app.use("/api/login", loginRoutes);
 app.use("/api/servidores", servidoresRoutes);
+app.use("/api/usuarios", usuarios)
 
 async function verificarServidores() {
   try {

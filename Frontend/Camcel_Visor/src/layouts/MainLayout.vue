@@ -100,13 +100,15 @@ const menuList = [
     separator: true
   },
   { 
-    icon: 'settings',
-    label: 'Configuracion',
+    icon: 'mdi-calendar',
+    Router: "/calendario",
+    label: 'Calendario',
     separator: true
   },
   {
-    icon: 'feedback',
-    label: 'Retroalimentacion',
+    icon: 'mdi-account',
+    label: 'Administracion de Usuarios',
+    Router: "/usuarios",
     separator: true
   },
   {
