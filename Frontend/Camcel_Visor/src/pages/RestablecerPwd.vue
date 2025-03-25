@@ -13,6 +13,8 @@
               </q-card-section>
             </q-card-section>
           </q-card>
+          <!-- Marca de agua -->
+<div class="watermark">BY MINIONS</div>
         </q-page>
       </q-page-container>
     </q-layout>
@@ -48,3 +50,19 @@
     };
     </script>
     
+    <style scoped>
+
+.watermark {
+  position: fixed;
+  bottom: 10px; /* Ajusta la posición vertical */
+  left: 50%; /* Centra horizontalmente */
+  transform: translateX(-50%); /* Ajusta el centrado */
+  color: rgba(0, 0, 0, 0.823); /* Color con transparencia */
+  font-size: 17px;
+  font-weight: bold;
+  z-index: 9999;
+  pointer-events: none; /* Evita que interfiera con clics */
+  user-select: none; /* Evita selección */
+}
+
+</style>
