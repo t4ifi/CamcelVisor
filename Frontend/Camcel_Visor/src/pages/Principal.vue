@@ -43,9 +43,9 @@
                     </div>
                   </q-col>
                   <q-col style="width: 5%; height: 100%; display: block;"></q-col>
-                  <q-col style="width: 10%; height: 100%; display: block;">
+                  <q-col style="width: 15%; height: 100%; display: block;">
                     <div class="text-h6 text-grey">{{ noticia.filial }}</div>
-                    <div class="text-h8 text-grey">{{ formatearFecha(noticia.fecha) }}</div>
+                    <div class="text-h6 text-grey">{{ formatearFecha(noticia.fecha) }}</div>
                   </q-col>
                 </q-row>
               </q-card-section>
@@ -61,11 +61,11 @@
         <!-- Columna para el estado de los servidores -->
         <q-col style="width: 40%; height: 100%; display: block;">
           <div  v-if="servidores.length" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-            <q-card v-for="servidor in servidores" :key="servidor.id" class="q-pa-md" style="height: 25vh;">
+            <q-card v-for="servidor in servidores" :key="servidor.id" class="q-pa-md" style="height: 21vh;">
               <q-card-section>
                 <div class="text-h6">{{ servidor.nombre }}</div>
-                <div class="text-body2">IP: {{ servidor.ip }}</div>
-                <div :class="{'text-positive': servidor.estado === 'Activo', 'text-negative': servidor.estado === 'Caído'}">
+                <div class="text-h5">IP: {{ servidor.ip }}</div>
+                <div :class="{'text-positive': servidor.estado === 'Activo', 'text-negative': servidor.estado === 'Caído'}" class="text-h5">
                   Estado: {{ servidor.estado }}
                 </div>
               </q-card-section>
