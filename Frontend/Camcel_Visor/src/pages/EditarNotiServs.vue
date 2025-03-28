@@ -173,7 +173,7 @@ async function eliminarServidor(id) {
 }
 
 async function cargarNoticias() {
-  const response = await api.get(`/api/noticias`);
+  const response = await api.get(`/api/noticias/2`);
   noticias.value = response.data;
 }
 

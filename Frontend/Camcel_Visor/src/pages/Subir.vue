@@ -3,7 +3,7 @@
     <!-- Formulario para subir noticia -->
     <q-card style="min-width: 50%; height: 90vh; display: block;">
       <q-card-section class="text-center">
-        <h2>Subir Noticia</h2>
+        <h3>Subir Noticia</h3>
         <q-form @submit="submitForm">
           <q-input
             filled
@@ -19,6 +19,8 @@
             type="textarea"
             required
           />
+          <!-- Selector de fecha -->
+          
           <!-- Selector para filiales -->
           <q-select
             filled
@@ -28,6 +30,13 @@
             required
             emit-value
             map-options
+          />
+          <q-input
+            filled
+            v-model="fecha"
+            label="Fecha de la Noticia"
+            type="date"
+            required
           />
           <q-btn
             label="Subir Noticia"
@@ -46,7 +55,7 @@
     <!-- Formulario para subir servidor -->
     <q-card style="min-width: 50%; height: 90vh; display: block;">
       <q-card-section class="text-center">
-        <h2>Subir Servidor</h2>
+        <h3>Subir Servidor</h3>
         <q-form @submit="submitForm2">
           <q-input
             filled
@@ -87,12 +96,12 @@ export default {
     return {
       titulo: '',
       descripcion: '',
+      fecha: '',
       nombre_serv: '',
       ip: '',
       filial: '',
-      // Lista de filiales (puede ser traída desde una API)
-      filiales: ['Melo', 'Rio Branco', 'Fraile Muerto', 'Santa Clara', 'Noblia', 'Aceguá', 'Tupambaé'],  // ejemplo de filiales
-      // Mensajes independientes para cada formulario
+      // Lista de filiales
+      filiales: ['Melo', 'Rio Branco', 'Fraile Muerto', 'Santa Clara', 'Noblia', 'Aceguá', 'Tupambaé'],
       mensajeNoticia: '',
       mensajeClassNoticia: '',
       mensajeServidor: '',
@@ -107,22 +116,17 @@ export default {
         const response = await api.post('/api/noticias', {
           titulo: this.titulo,
           descripcion: this.descripcion,
+          fecha: this.fecha,
           filial: this.filial,
         });
         this.mensajeNoticia = 'Noticia subida exitosamente.';
         this.mensajeClassNoticia = 'bg-positive text-white';
         this.clearForm();
-        // Desaparecer el mensaje después de 5 segundos
-        setTimeout(() => {
-          this.mensajeNoticia = '';
-        }, 5000);
+        setTimeout(() => { this.mensajeNoticia = ''; }, 5000);
       } catch (error) {
         this.mensajeNoticia = 'Error al subir la noticia.';
         this.mensajeClassNoticia = 'bg-negative text-white';
-        // Desaparecer el mensaje después de 5 segundos
-        setTimeout(() => {
-          this.mensajeNoticia = '';
-        }, 5000);
+        setTimeout(() => { this.mensajeNoticia = ''; }, 5000);
       } finally {
         this.loading = false;
       }
@@ -131,25 +135,17 @@ export default {
       this.loading = true;
       try {
         const response = await api.post('/api/Servidores', {
-          
           nombre: this.nombre_serv,
           ip: this.ip,
         });
-        console.log("subiendo Serv", this.nombre_serv)
         this.mensajeServidor = 'Servidor subido exitosamente.';
         this.mensajeClassServidor = 'bg-positive text-white';
         this.clearForm2();
-        // Desaparecer el mensaje después de 5 segundos
-        setTimeout(() => {
-          this.mensajeServidor = '';
-        }, 5000);
+        setTimeout(() => { this.mensajeServidor = ''; }, 5000);
       } catch (error) {
         this.mensajeServidor = 'Error al subir el Servidor.';
         this.mensajeClassServidor = 'bg-negative text-white';
-        // Desaparecer el mensaje después de 5 segundos
-        setTimeout(() => {
-          this.mensajeServidor = '';
-        }, 5000);
+        setTimeout(() => { this.mensajeServidor = ''; }, 5000);
       } finally {
         this.loading = false;
       }
@@ -157,6 +153,7 @@ export default {
     clearForm() {
       this.titulo = '';
       this.descripcion = '';
+      this.fecha = '';
       this.filial = '';
     },
     clearForm2() {

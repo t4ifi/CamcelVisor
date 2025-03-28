@@ -141,19 +141,7 @@ onMounted(() => {
 
   socket.on('noticiaCreada', (data) => {
     
-
-    // Verificar si `data` es un array o un solo objeto
-    if (Array.isArray(data)) {
-      // Si es un array, agregar cada noticia al inicio del array de noticias
-      data.forEach((noticia) => {
-        noticias.value.unshift(noticia);
-      });
-    } else if (data && typeof data === 'object') {
-      // Si es un solo objeto, agregarlo directamente
-      noticias.value.unshift(data);
-    } else {
-      console.error('El formato de data no es válido:', data);
-    }
+    cargarNoticias()
 
    
   });
@@ -278,6 +266,7 @@ function eliminarNoticiaDeLista(id) {
 async function cargarNoticias() {
   const response = await api.get(`/api/noticias`);
   noticias.value = response.data;
+  console.log(response.data)
 }
 
 

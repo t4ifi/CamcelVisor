@@ -110,7 +110,7 @@ const nextMonth = () => {
 
 const fetchNews = async () => {
   try {
-    const response = await api.get('/api/noticias');
+    const response = await api.get('/api/noticias/2');
     newsList.value = response.data;
   } catch (error) {
     console.error('Error al obtener noticias:', error);
